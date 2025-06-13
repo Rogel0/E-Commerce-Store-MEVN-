@@ -1,0 +1,27 @@
+By pair, create an application that will resolve these user stories. Feel free to choose your partner. DM me your pair. Thank you!
+
+Theme: API Integration
+Main tool to use: Axios
+API: https://fakestoreapi.com/
+
+[Customer]
+
+- As a user I should be able to register an account to the store
+- As a user I should be able to login as a customer
+- As a user I should be able to go to customer landing page
+- As a user I should be able to view all products of the store
+- As a user I should be able to view the product details from the store
+- As a user I should be able to view all products of my cart
+- As a user I should be able to add product(s) to cart
+- As a user I should be able to remove products to my cart
+
+[Store]
+
+- As a user I should be able to login as the store owner
+- As a user I should be able to view Store Dashboard
+- As a user I should be able to add user to my store
+- As a user I should be able to view all the user from my store
+- As a user I should be able to remove user from my store
+- As a user I should be able to add products to my store
+- As a user I should be able to update products to my store
+- As a user I should be able to remove products to my store

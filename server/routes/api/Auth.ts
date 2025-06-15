@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import User from "../../models/User";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-router.post("/", async (req: any, res: any) => {
+router.post("/register", async (req: any, res: any) => {
   try {
     // 1. Get user data from request body
     const { email, password, phoneNumber, fullName, profilePicture, address } =
@@ -49,19 +50,29 @@ router.post("/", async (req: any, res: any) => {
 router.post("/login", async (req: any, res: any) => {
   try {
     const { email, password } = req.body;
+    console.log("Login attempt:", email, password);
     const user = await User.findOne({ email });
+    console.log("User found:", user);
     if (!user)
       return res.status(400).json({ message: "Invalid email or password" });
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Password match:", isMatch);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
     const userObj = user.toObject();
     delete (userObj as any).password;
 
-    res.status(200).json(userObj);
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({ user: userObj, token });
   } catch (error: any) {
+    console.error("Login error:", error);
     res.status(500).json({ message: error.message });
   }
 });

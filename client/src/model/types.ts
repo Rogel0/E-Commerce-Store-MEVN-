@@ -12,7 +12,6 @@ export interface Product {
 }
 
 export interface Users {
-  userId: number
   email: string
   phoneNumber: number
   fullName?: string
@@ -23,6 +22,18 @@ export interface Users {
     state: string
     zip: string
   }
+  password: string
+}
+
+export interface RegisterUser {
+  fullName: string
+  email: string
+  phoneNumber: number
+  password: string
+}
+
+export interface LoginUser {
+  email: string
   password: string
 }
 

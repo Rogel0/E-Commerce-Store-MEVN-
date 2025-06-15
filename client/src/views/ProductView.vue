@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { fetchProductById } from '@/api/services/productService'
+import { fetchProductById } from '@/api/services/product/productService'
 import HeaderComponent from '@/components/headerComponent.vue'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'

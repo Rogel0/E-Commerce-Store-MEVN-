@@ -141,6 +141,9 @@ import { useUserStore } from '@/stores/useUserStore'
 import { ElMessage, ElLoading } from 'element-plus'
 import { useRouter } from 'vue-router'
 import { useUiStateStore } from '@/stores/useUiStateStore'
+import type { RegisterUser } from '@/model/types'
+import { registerUser } from '@/api/services/auth/registerUserServices'
+import { loginUser } from '@/api/services/auth/loginUserServices'
 
 const uiState = useUiStateStore()
 
@@ -199,31 +202,31 @@ const loginRules = ref<FormRules>({
   ],
 })
 
-const onRegister = () => {
-  registerFormRef.value?.validate((valid) => {
+const onRegister = async () => {
+  registerFormRef.value?.validate(async (valid) => {
+    if (!valid) return
     const loading = ElLoading.service({
       lock: true,
       text: 'Registering...',
       background: 'rgba(0, 0, 0, 0.7)',
     })
-    setTimeout(() => {
-      loading.close()
-    }, 2000)
-    setTimeout(() => {
-      if (!valid) return
+
+    try {
       const user = {
-        userId: Date.now(),
         email: registerForm.value.email,
         phoneNumber: Number(registerForm.value.phoneNumber),
         fullName: registerForm.value.fullName,
         password: registerForm.value.password,
       }
-
-      userStore.handleRegister(user)
-      uiState.loginDialogOpen = false
+      await registerUser(user)
       ElMessage.success('Registration successful! You can now log in.')
+      uiState.loginDialogOpen = false
       resetRegisterForm()
-    }, 2000)
+    } catch {
+      ElMessage.error('Registration failed. Please try again.')
+    } finally {
+      loading.close()
+    }
   })
 }
 
@@ -234,55 +237,65 @@ const resetRegisterForm = () => {
   registerForm.value.password = ''
 }
 
-const onLogin = () => {
-  loginFormRef.value?.validate((valid) => {
+const onLogin = async () => {
+  loginFormRef.value?.validate(async (valid) => {
     if (!valid) return
 
-    if (
-      loginForm.value.phoneOrEmail === storeOwner.value.email &&
-      loginForm.value.password === storeOwner.value.password
-    ) {
-      const user = {
-        userId: Date.now(),
-        email: storeOwner.value.email,
-        phoneNumber: Number(storeOwner.value.phoneNumber),
-        fullName: storeOwner.value.fullName,
-        password: storeOwner.value.password,
-      }
-      const token = 'mock-token-store-owner-' + Date.now()
-      userStore.handleLogin(user, token)
-      uiState.loginDialogOpen = false
+    try {
+      const response = await loginUser(loginForm.value.phoneOrEmail, loginForm.value.password)
+      localStorage.setItem('token', response.token)
       ElMessage.success('Store owner login successful!')
-      router.push('/dashboard')
-      return
+    } catch {
+      ElMessage.error('Login failed. Please check your credentials and try again.')
+    } finally {
+      uiState.loginDialogOpen = false
     }
 
-    const storedUser = JSON.parse(localStorage.getItem('user') || 'null')
-    if (!storedUser) {
-      ElMessage.error('No registered user found. Please sign up first.')
-      return
-    }
-    const isEmail = loginForm.value.phoneOrEmail.includes('@')
-    const isMatch =
-      ((isEmail && loginForm.value.phoneOrEmail === storedUser.email) ||
-        (!isEmail && Number(loginForm.value.phoneOrEmail) === storedUser.phoneNumber)) &&
-      loginForm.value.password === storedUser.password
-    if (!isMatch) {
-      ElMessage.error('Invalid credentials. Please try again.')
-      return
-    }
-    // Credentials correct, log in
-    const user = {
-      userId: storedUser.userId,
-      email: storedUser.email,
-      phoneNumber: storedUser.phoneNumber,
-      fullName: storedUser.fullName,
-      password: storedUser.password,
-    }
-    const token = 'mock-token-' + Date.now()
-    userStore.handleLogin(user, token)
-    uiState.loginDialogOpen = false
-    ElMessage.success('Login successful!')
+    // if (
+    //   loginForm.value.phoneOrEmail === storeOwner.value.email &&
+    //   loginForm.value.password === storeOwner.value.password
+    // ) {
+    //   const user = {
+    //     userId: Date.now(),
+    //     email: storeOwner.value.email,
+    //     phoneNumber: Number(storeOwner.value.phoneNumber),
+    //     fullName: storeOwner.value.fullName,
+    //     password: storeOwner.value.password,
+    //   }
+    //   const token = 'mock-token-store-owner-' + Date.now()
+    //   userStore.handleLogin(user, token)
+    //   uiState.loginDialogOpen = false
+    //   ElMessage.success('Store owner login successful!')
+    //   router.push('/dashboard')
+    //   return
+    // }
+
+    // const storedUser = JSON.parse(localStorage.getItem('user') || 'null')
+    // if (!storedUser) {
+    //   ElMessage.error('No registered user found. Please sign up first.')
+    //   return
+    // }
+    // const isEmail = loginForm.value.phoneOrEmail.includes('@')
+    // const isMatch =
+    //   ((isEmail && loginForm.value.phoneOrEmail === storedUser.email) ||
+    //     (!isEmail && Number(loginForm.value.phoneOrEmail) === storedUser.phoneNumber)) &&
+    //   loginForm.value.password === storedUser.password
+    // if (!isMatch) {
+    //   ElMessage.error('Invalid credentials. Please try again.')
+    //   return
+    // }
+    // // Credentials correct, log in
+    // const user = {
+    //   userId: storedUser.userId,
+    //   email: storedUser.email,
+    //   phoneNumber: storedUser.phoneNumber,
+    //   fullName: storedUser.fullName,
+    //   password: storedUser.password,
+    // }
+    // const token = 'mock-token-' + Date.now()
+    // userStore.handleLogin(user, token)
+    // uiState.loginDialogOpen = false
+    // ElMessage.success('Login successful!')
   })
 }
 </script>

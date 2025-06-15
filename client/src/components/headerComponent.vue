@@ -51,7 +51,7 @@
             >Cart</el-button
           ></el-badge
         >
-        <el-dropdown v-if="userStore.token">
+        <el-dropdown v-if="hasToken">
           <el-button :icon="Avatar" text>Account</el-button>
           <template #dropdown>
             <el-dropdown-item @click="onLogout"> Logout </el-dropdown-item>
@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { fetchProducts } from '@/api/services/productService'
+import { fetchProducts } from '@/api/services/product/productService'
 import { useCartStore } from '@/stores/useCartStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { ElLoading } from 'element-plus'
@@ -76,6 +76,7 @@ const uiState = useUiStateStore()
 
 const userStore = useUserStore()
 const cartStore = useCartStore()
+const hasToken = computed(() => !!localStorage.getItem('token'))
 
 const onLogout = () => {
   const loading = ElLoading.service({

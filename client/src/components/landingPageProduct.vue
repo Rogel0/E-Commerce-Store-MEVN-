@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
-import { fetchProducts } from '@/api/services/productService'
+import { fetchProducts } from '@/api/services/product/productService'
 import { useCartStore } from '@/stores/useCartStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { ElMessage } from 'element-plus'

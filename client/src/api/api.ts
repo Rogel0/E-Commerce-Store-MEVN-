@@ -1,8 +1,9 @@
 import axios from 'axios'
 
-const api = axios.create({
+export const fakeStoreApi = axios.create({
   baseURL: 'https://fakestoreapi.com',
-  timeout: 10000,
 })
 
-export default api
+export const AuthApi = axios.create({
+  baseURL: 'http://localhost:3000/api/auth',
+})

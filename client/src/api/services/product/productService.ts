@@ -1,6 +1,8 @@
-import api from '@/api/api'
+import { fakeStoreApi } from '@/api/api'
 import type { Product } from '@/model/types'
 import { ref } from 'vue'
+
+const fakeStore = fakeStoreApi
 
 export function fetchProducts() {
   const products = ref<Product[]>([])
@@ -9,7 +11,7 @@ export function fetchProducts() {
   const getProducts = async () => {
     loading.value = true
     try {
-      const res = await api.get<Product[]>('/products')
+      const res = await fakeStore.get<Product[]>('/products')
       products.value = res.data
     } catch (error) {
       console.error('Failed to fetch products:', error)
@@ -30,7 +32,7 @@ export const fetchProductById = () => {
 
   const getProductById = async (id: number) => {
     try {
-      const res = await api.get<Product>(`/products/${id}`)
+      const res = await fakeStore.get<Product>(`/products/${id}`)
       product.value = res.data
     } catch (error) {
       console.error('Failed to fetch product by ID:', error)
@@ -44,15 +46,15 @@ export const fetchProductById = () => {
 }
 
 export const createProduct = async (data: Product): Promise<Product[]> => {
-  const res = await api.post('/products', data)
+  const res = await fakeStore.post('/products', data)
   return res.data
 }
 
 export const updateProduct = async (id: number, data: Product): Promise<Product> => {
-  const res = await api.put(`/products/${id}`, data)
+  const res = await fakeStore.put(`/products/${id}`, data)
   return res.data
 }
 
 export const deleteProduct = async (id: number): Promise<void> => {
-  await api.delete(`/products/${id}`)
+  await fakeStore.delete(`/products/${id}`)
 }

@@ -1,4 +1,5 @@
 <template>
+  <ClerkAuthComponent />
   <el-header>
     <el-row
       align="middle"
@@ -57,7 +58,11 @@
             <el-dropdown-item @click="onLogout"> Logout </el-dropdown-item>
           </template>
         </el-dropdown>
-        <el-button v-else :icon="Avatar" text @click="uiState.toggleLoginDialog">Login</el-button>
+        <SignedOut>
+          <SignInButton mode="modal">
+            <el-button :icon="Avatar" text>Login</el-button>
+          </SignInButton>
+        </SignedOut>
       </el-col>
     </el-row>
   </el-header>
@@ -71,9 +76,10 @@ import { ElLoading } from 'element-plus'
 import { computed, onMounted, ref, watch } from 'vue'
 import { Avatar, HelpFilled, Location, ShoppingCart, Star } from '@element-plus/icons-vue'
 import { useUiStateStore } from '@/stores/useUiStateStore'
+import ClerkAuthComponent from './authCompoent/clerkAuthComponent.vue'
+import { SignInButton, SignedOut } from '@clerk/vue'
 
 const uiState = useUiStateStore()
-
 const userStore = useUserStore()
 const cartStore = useCartStore()
 const hasToken = computed(() => !!localStorage.getItem('token'))

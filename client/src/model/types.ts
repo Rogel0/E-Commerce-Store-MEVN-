@@ -12,17 +12,31 @@ export interface Product {
 }
 
 export interface Users {
-  email: string
-  phoneNumber: number
+  username?: string
+  firstName?: string
+  lastName?: string
   fullName?: string
-  profilePicture?: string
-  address?: {
-    street: string
-    city: string
-    state: string
-    zip: string
+  imageUrl?: string
+  emailAddresses: {
+    id: string
+    emailAddress: string
+    verification: { status: string }
   }
-  password: string
+  phoneNumbers?: {
+    id: string
+    phoneNumber: string
+    verification: { status: string }
+  }
+  externalAccounts?: {
+    provider: string
+    emailAddress: string
+    firstName?: string
+    lastName?: string
+    picture?: string
+    providerUserId: string
+  }
+  createdAt: number
+  updatedAt: number
 }
 
 export interface RegisterUser {

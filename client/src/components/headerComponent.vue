@@ -1,5 +1,4 @@
 <template>
-  <ClerkAuthComponent />
   <el-header>
     <el-row
       align="middle"
@@ -58,11 +57,7 @@
             <el-dropdown-item @click="onLogout"> Logout </el-dropdown-item>
           </template>
         </el-dropdown>
-        <SignedOut>
-          <SignInButton mode="modal">
-            <el-button :icon="Avatar" text>Login</el-button>
-          </SignInButton>
-        </SignedOut>
+        <ClerkAuthComponent v-else />
       </el-col>
     </el-row>
   </el-header>

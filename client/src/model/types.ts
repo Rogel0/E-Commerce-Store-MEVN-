@@ -12,6 +12,7 @@ export interface Product {
 }
 
 export interface Users {
+  userId: string
   username?: string
   firstName?: string
   lastName?: string

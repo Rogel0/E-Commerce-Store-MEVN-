@@ -5,10 +5,12 @@ export const useUiStateStore = defineStore('uiStateStore', {
   state: () => ({
     loginDialogOpen: false,
     cartDrawerOpen: false,
+    accountDrawerOpen: false,
   }),
   getters: {
     isLoginDialogOpen: (state) => state.loginDialogOpen,
     isCartDrawerOpen: (state) => state.cartDrawerOpen,
+    isAccountDrawerOpen: (state) => state.accountDrawerOpen,
   },
   actions: {
     toggleLoginDialog() {
@@ -16,6 +18,9 @@ export const useUiStateStore = defineStore('uiStateStore', {
     },
     toggleCartDrawer() {
       this.cartDrawerOpen = !this.cartDrawerOpen
+    },
+    toggleaccountDrawer() {
+      this.accountDrawerOpen = !this.accountDrawerOpen
     },
   },
 })

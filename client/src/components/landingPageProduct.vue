@@ -31,7 +31,7 @@
               <div class="bottom">
                 <h2 class="price">₱{{ product.price }}</h2>
                 <el-icon
-                  v-if="userStore.token"
+                  v-if="user"
                   class="add"
                   @click="handleAddToCart({ ...product, productId: product.id, quantity: 1 })"
                   ><ShoppingCart color="green" :size="20"
@@ -52,6 +52,9 @@ import { useCartStore } from '@/stores/useCartStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { useUser } from '@clerk/vue'
+
+const { user } = useUser()
 
 const router = useRouter()
 

@@ -1,6 +1,7 @@
 <template>
   <HeaderComponent v-model:selectedCategory="selectedCategory" v-model:searchInput="searchInput" />
   <CartDrawerComponent />
+  <AccountDrawerCompoent />
   <AuthLoginComponent />
   <HeroSectionComponent />
   <LandingPageProduct :selectedCategory="selectedCategory" :search="searchInput" />
@@ -13,6 +14,7 @@ import LandingPageProduct from '@/components/landingPageProduct.vue'
 import { ref } from 'vue'
 import CartDrawerComponent from '@/components/cartDrawerComponent.vue'
 import HeaderComponent from '@/components/headerComponent.vue'
+import AccountDrawerCompoent from '@/components/accountDrawerCompoent.vue'
 
 const selectedCategory = ref('')
 const searchInput = ref('')

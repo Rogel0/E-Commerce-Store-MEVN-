@@ -1,12 +1,8 @@
 <template>
   <el-header>
-    <el-row
-      align="middle"
-      justify="space-between"
-      style="width: 100%; padding-top: 25px; padding-right: 7%; padding-left: 7%"
-    >
+    <el-row align="middle" justify="space-between" style="width: 100%; padding: 25px 7% 20px 10%">
       <el-col :span="2" class="centered-col">
-        <el-text class="logo-title">MatStore</el-text>
+        <el-text class="logo-title" @click="goToHome">MatStore</el-text>
       </el-col>
       <el-col :span="6" class="centered-col">
         <el-input
@@ -43,7 +39,7 @@
           <el-option prop="ph" value="ph">Phillipine</el-option>
         </el-select>
       </el-col>
-      <el-col :span="6" class="centered-col">
+      <el-col :span="8" class="centered-col">
         <el-button :icon="HelpFilled" text>Compare</el-button>
         <el-badge :value="2"><el-button :icon="Star" text>Wishlist</el-button></el-badge>
         <el-badge :value="cartStore.getCartCount"
@@ -51,9 +47,17 @@
             >Cart</el-button
           ></el-badge
         >
-        <el-dropdown v-if="hasToken">
-          <el-button :icon="Avatar" text>Account</el-button>
+        <el-dropdown v-if="isLoaded && isSignedIn">
+          <el-button text>
+            <span class="user-avatar">
+              <UserButton />
+            </span>
+            <span v-if="user && user?.username"> {{ user?.username }}</span>
+            <span v-else>Loading....</span>
+          </el-button>
           <template #dropdown>
+            <el-dropdown-item @click="goToAccount()">My Account</el-dropdown-item>
+            <el-dropdown-item @click="gotoPurchase">My Purchase</el-dropdown-item>
             <el-dropdown-item @click="onLogout"> Logout </el-dropdown-item>
           </template>
         </el-dropdown>
@@ -67,30 +71,37 @@
 import { fetchProducts } from '@/api/services/product/productService'
 import { useCartStore } from '@/stores/useCartStore'
 import { useUserStore } from '@/stores/useUserStore'
-import { ElLoading } from 'element-plus'
 import { computed, onMounted, ref, watch } from 'vue'
-import { Avatar, HelpFilled, Location, ShoppingCart, Star } from '@element-plus/icons-vue'
+import { HelpFilled, Location, ShoppingCart, Star } from '@element-plus/icons-vue'
 import { useUiStateStore } from '@/stores/useUiStateStore'
 import ClerkAuthComponent from './authCompoent/clerkAuthComponent.vue'
-import { SignInButton, SignedOut } from '@clerk/vue'
+import { UserButton } from '@clerk/vue'
+import { useAuth, useUser } from '@clerk/vue'
+import { useRouter } from 'vue-router'
 
+const { user, isSignedIn, isLoaded } = useUser()
 const uiState = useUiStateStore()
 const userStore = useUserStore()
 const cartStore = useCartStore()
 const hasToken = computed(() => !!localStorage.getItem('token'))
+const { signOut } = useAuth()
 
-const onLogout = () => {
-  const loading = ElLoading.service({
-    lock: true,
-    text: 'Registering...',
-    background: 'rgba(0, 0, 0, 0.7)',
-  })
-  setTimeout(() => {
-    loading.close()
-  }, 2000)
-  setTimeout(() => {
-    userStore.handleLogout()
-  }, 2000)
+const router = useRouter()
+
+const onLogout = async () => {
+  await signOut.value()
+}
+
+const goToAccount = () => {
+  router.push({ name: 'myAccount' })
+}
+
+const goToHome = () => {
+  router.push({ name: 'home' })
+}
+
+const gotoPurchase = () => {
+  router.push({ name: 'myPurchase' })
 }
 
 const { products, getProducts } = fetchProducts()
@@ -129,6 +140,16 @@ watch(
 </script>
 
 <style scoped>
+.small-avatar .cl-internal-1j7ahlv {
+  width: 15px !important;
+  height: 15px !important;
+}
+.user-avatar {
+  margin-right: 4px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .el-header {
   position: fixed;
   top: 0;
@@ -143,6 +164,7 @@ watch(
   color: #39b97e;
   font-weight: 800;
   font-size: 2em;
+  cursor: pointer;
 }
 
 .input-with-select {

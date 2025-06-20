@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import ViewProduct from '@/views/ProductView.vue'
+import MyAccount from '@/views/MyAccountView.vue'
+import MyPuchase from '@/views/MyPurchaseView.vue'
 import { useUserStore } from '@/stores/useUserStore'
 
 const router = createRouter({
@@ -22,20 +24,30 @@ const router = createRouter({
       name: 'productDetails',
       component: ViewProduct,
     },
+    {
+      path: '/account',
+      name: 'myAccount',
+      component: MyAccount,
+    },
+    {
+      path: '/purchase',
+      name: 'myPurchase',
+      component: MyPuchase,
+    },
   ],
 })
 
-router.beforeEach((to, from, next) => {
-  const userStore = useUserStore()
-  const user = userStore.getUser
+// router.beforeEach((to, from, next) => {
+//   const userStore = useUserStore()
+//   const user = userStore.getUser
 
-  if (to.path === '/dashboard' && (!user || user.email !== 'owner@gmail.com')) {
-    next('/')
-  } else if (user && user.email === 'owner@gmail.com' && to.path === '/') {
-    next('/dashboard')
-  } else {
-    next()
-  }
-})
+//   if (to.path === '/dashboard' && (!user || user.email !== 'owner@gmail.com')) {
+//     next('/')
+//   } else if (user && user.email === 'owner@gmail.com' && to.path === '/') {
+//     next('/dashboard')
+//   } else {
+//     next()
+//   }
+// })
 
 export default router
